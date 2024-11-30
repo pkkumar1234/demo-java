@@ -45,7 +45,9 @@ jobs:
         cp target/demo.war tomcat/webapps/
 
         # Start the Tomcat server
-        tomcat/bin/startup.sh
+        # Start the Tomcat server
+          chmod +x tomcat/bin/startup.sh
+          tomcat/bin/startup.sh
 
     # Step 5: Upload the WAR artifact
     - name: Upload WAR artifact
