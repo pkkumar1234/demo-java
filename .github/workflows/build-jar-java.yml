@@ -1,0 +1,33 @@
+name: Java Build and Run
+
+on:
+  push:
+    branches:
+      - master
+  # pull_request:
+  #   branches:
+  #     - main
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up JDK (Java Development Kit)
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin' # or adopt, zulu, etc.
+
+    # Build the Java application using Maven or Gradle
+    - name: Build with Maven
+      run: mvn clean package
+
+    # Run the JAR file
+    - name: Run JAR File
+      run: java -jar target/your-application-name.jar
