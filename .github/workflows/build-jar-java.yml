@@ -30,4 +30,4 @@ jobs:
 
     # Run the JAR file
     - name: Run JAR File
-      run: target/*.war
+      run: target/demo.war
