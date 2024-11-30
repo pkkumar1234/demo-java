@@ -30,4 +30,4 @@ jobs:
 
     # Run the JAR file
     - name: Run JAR File
-      run: java -jar target/your-application-name.jar
+      run: target/*.war
