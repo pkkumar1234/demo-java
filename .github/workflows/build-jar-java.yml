@@ -36,5 +36,5 @@ jobs:
     - name: Upload JAR artifact
       uses: actions/upload-artifact@v3
       with:
-        name: java-app-jar
-        path: target/*.jar
+        name: java-app-war
+        path: target/*.war
