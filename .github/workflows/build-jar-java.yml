@@ -37,9 +37,9 @@ jobs:
     - name: Set up and deploy to Tomcat
       run: |
         # Download and extract Tomcat
-        wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.33/bin/apache-tomcat-10.1.33-windows-x64.zip
-        tar -xzf apache-tomcat-10.1.33-windows-x64.zip.gz
-        mv apache-tomcat-10.1.33-windows-x64 tomcat
+        wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.33/bin/apache-tomcat-10.1.33.tar.gz
+        tar -xzf apache-tomcat-10.1.33.tar.gz
+        mv apache-tomcat-10.1.33 tomcat
 
         # Copy the WAR file to the webapps directory
         cp target/demo.war tomcat/webapps/
