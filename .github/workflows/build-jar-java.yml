@@ -1,55 +1,45 @@
-name: Build and Deploy WAR to Tomcat
+name: Build JAR and WAR with Maven
 
 on:
   push:
     branches:
-      - master
+      - main
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Check out the code
+    # Step 1: Checkout the code
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Set up Java and Maven
-    - name: Set up JDK 21
+    # Step 2: Set up JDK (e.g., version 17 or your required version)
+    - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
-        java-version: '21'
-        #distribution: 'adoptopenjdk'
+        java-version: '17'
         distribution: 'temurin'
-        java-package: 'jdk'
-        check-latest: false
 
-    # - name: Set up Maven
-    #   uses: actions/setup-java@v3
-    #   with:
-    #     maven-version: '3.8.1'
+    # Step 3: Cache Maven dependencies
+    - name: Cache Maven dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven
 
-    # Step 3: Build the WAR file using Maven
+    # Step 4: Build with Maven
     - name: Build with Maven
       run: mvn clean package
 
-    # Step 4: Set up Tomcat and deploy the WAR
-    - name: Set up and deploy to Tomcat
-      run: |
-        # Download and extract Tomcat
-        wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.6/bin/apache-tomcat-10.1.6.tar.gz
-        tar -xzf apache-tomcat-10.1.6.tar.gz
-        mv apache-tomcat-10.1.6 tomcat
-
-        # Copy the WAR file to the webapps directory
-        cp target/demo.war tomcat/webapps/
-
-        # Start the Tomcat server
-        tomcat/bin/startup.sh
-
-    # Step 5: Upload the WAR artifact
-    - name: Upload WAR artifact
+    # Step 5: Upload build artifacts
+    - name: Upload JAR and WAR files
       uses: actions/upload-artifact@v3
       with:
-        name: java-app-war
-        path: target/*.war
+        name: build-artifacts
+        path: |
+          target/*.jar
+          target/*.war
