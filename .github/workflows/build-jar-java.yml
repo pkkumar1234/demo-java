@@ -24,10 +24,10 @@ jobs:
         java-package: 'jdk'
         check-latest: false
 
-    - name: Set up Maven
-      uses: actions/setup-java@v3
-      with:
-        maven-version: '3.8.1'
+    # - name: Set up Maven
+    #   uses: actions/setup-java@v3
+    #   with:
+    #     maven-version: '3.8.1'
 
     # Step 3: Build the WAR file using Maven
     - name: Build with Maven
