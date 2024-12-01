@@ -48,10 +48,6 @@ jobs:
         # Start the Tomcat server
           chmod +x tomcat/bin/startup.sh
           tomcat/bin/startup.sh
-        - name: Deploy to GitHub Pages
-          uses: actions/deploy-pages@v3
-          with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           
     # Step 5: Upload the WAR artifact
     - name: Upload WAR artifact
