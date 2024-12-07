@@ -1,45 +1,51 @@
-name: Build JAR and WAR with Maven
+name: Run Action for Any Branch with Conditions
 
 on:
-  push:
+  push: 
     branches:
-      - master
-  pull_request:
+      - '*'  # Matches all branches
 
 jobs:
-  build:
-    runs-on: self-github
-
+  handle-master:
+    runs-on: [self-hosted, self-github]  # Specify runner by label
+    if: github.ref == 'refs/heads/master'  # Run only for the master branch
     steps:
-    # Step 1: Checkout the code
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    # Step 2: Set up JDK (e.g., version 17 or your required version)
-    # - name: Set up JDK 17
-    #   uses: actions/setup-java@v3
-    #   with:
-    #     java-version: '17'
-    #     distribution: 'temurin'
+      - name: Master branch script
+        run: echo "Running job for master branch."
 
-    # # Step 3: Cache Maven dependencies
-    # - name: Cache Maven dependencies
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: ~/.m2/repository
-    #     key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-maven
+  handle-deploy:
+    runs-on: [self-hosted, self-github]  # Specify runner by label
+    if: github.ref == 'refs/heads/deploy'  # Run only for the deploy branch
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    # Step 4: Build with Maven
-    # - name: Build with Maven
-    #   run: mvn clean package
+      - name: Deploy branch script
+        run: echo "Running job for deploy branch."
 
-    # # Step 5: Upload build artifacts
-    # - name: Upload JAR and WAR files
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: build-artifacts
-    #     path: |
-    #       target/*.jar
-    #       target/*.war
+  handle-feature:
+    runs-on: [self-hosted, self-github]  # Specify runner by label
+    if: github.ref == 'refs/heads/feature'  # Run only for the feature branch
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Feature branch script
+        run: echo "Running job for feature branch."
+
+  handle-other-branches:
+    runs-on: [self-hosted, self-github]  # Specify runner by label
+    if: |
+      startsWith(github.ref, 'refs/heads/') && 
+      github.ref != 'refs/heads/master' && 
+      github.ref != 'refs/heads/deploy' && 
+      github.ref != 'refs/heads/feature'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Generic script for other branches
+        run: echo "Running job for other branches."
