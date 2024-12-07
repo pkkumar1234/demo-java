@@ -1,18 +1,17 @@
-name: Run Action for Any Branch with Conditions
+name: Conditional Build & Branch Handling
 
 on:
   push: 
     branches:
-      - '*'  # Matches all branches
+      - '*'  # Trigger the workflow for all branches
 
 jobs:
   handle-master:
-    runs-on: [self-hosted, self-github]  # Specify runner by label
-    if: github.ref == 'refs/heads/master'  # Run only for the master branch
+    runs-on: [self-hosted, self-github]  # Use the self-hosted runner
+    if: github.ref == 'refs/heads/master'  # Only run for the master branch
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
       - name: Master branch script
         run: echo "Running job for master branch."
 
@@ -22,7 +21,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
       - name: Deploy branch script
         run: echo "Running job for deploy branch."
 
@@ -32,12 +30,23 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
 
-      - name: Feature branch script
-        run: echo "Running job for feature branch."
+      - name: Build JAR/WAR file
+        run: |
+          ./gradlew clean build  # Adjust this with your build script or logic
+
+      - name: Upload JAR/WAR as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-artifact
+          path: build/libs/*.jar  # Path to your built JAR/WAR
 
   handle-other-branches:
-    runs-on: [self-hosted, self-github]  # Specify runner by label
+    runs-on: [self-hosted, self-github]
     if: |
       startsWith(github.ref, 'refs/heads/') && 
       github.ref != 'refs/heads/master' && 
@@ -46,6 +55,5 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      - name: Generic script for other branches
+      - name: Other branches script
         run: echo "Running job for other branches."
